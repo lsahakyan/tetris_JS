@@ -35,13 +35,27 @@ body{
 
 .gameScore{
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    font-size: 30px;
-    width: 200px;
-    height: 100px;
-    border: 10px solid white;
-    margin: 17px 80px -68px 90px;
+    font-size: 40px;
+    margin: 17px 200px -130px 200px;
     color: aliceblue;
   }
+  
+.button{
+    margin: 16px 50px 30px 416px;
+    
+
+}
+.Resume{
+    border: 10px solid green;
+    height: 80px;
+    width: 150px;
+}
+
+.Pause{
+    border: 10px solid green;
+    height: 80px;
+    width: 150px;
+} 
   
   
 
