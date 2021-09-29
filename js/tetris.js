@@ -1,4 +1,9 @@
 let main = document.querySelector(".main");
+let scoreEl = document.querySelector(".score");
+let levelEl = document.querySelector(".level");
+let score = 0;
+let level=0;
+let speed = 500;
 let playField = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -21,6 +26,41 @@ let playField = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 ]
+
+let figures = {
+    O: [
+      [1, 1],
+      [1, 1],
+    ],
+    I: [
+      [0, 0, 0, 0],
+      [1, 1, 1, 1],
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+    ],
+    S: [
+      [0, 1, 1],
+      [1, 1, 0],
+      [0, 0, 0],
+    ],
+    Z: [
+      [1, 1, 0],
+      [0, 1, 1],
+      [0, 0, 0],
+    ],
+    L: [
+      [1, 0, 0],
+      [1, 1, 1],
+      [0, 0, 0],
+    ],
+  
+    T: [
+      [1, 1, 1],
+      [0, 1, 0],
+      [0, 0, 0],
+    ],
+  };
+  
 
 
 let activeCell = {
@@ -237,18 +277,48 @@ function removeFullLines() {
         if (canRemoveLine) {
             playField.splice(i,1);
             playField.splice(0,0,[0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+            score += 10
         }
         canRemoveLine = true;
     }
+        scoreEl.innerHTML = score;
 }
 
-/*function creditPoints () {
-    let count = 0
-    if(removeFullLines){
-        count += 1
 
+
+function  countlevel() {
+    if(score >= 50){
+       level += 1;
+       score = 0;
     }
-}*/
+    scoreEl.innerHTML = score;
+    levelEl.innerHTML = level;
+    speed-=100;
+}
+
+function getNewCell() {
+    let prevFigures = "OIZSTL";
+    let rand = Math.floor(Math.random() * 6);
+    let newCell = figures[prevFigures[rand]];
+  
+    return newCell;
+  }
+
+
+function moveCellDown() {
+    activeCell.y += 1;
+    if (hasCollisions()) {
+      activeCell.y -= 1;
+      fixMove();
+      removeFullLines();
+      countlevel();
+      activeCell.shape = getNewCell();
+      activeCell.x = Math.floor(
+        (playField[0].length - activeCell.shape[0].length) / 2
+      );
+      activeCell.y = 0;
+    }
+  }
 
 
 document.addEventListener("keydown", function (event){
@@ -266,12 +336,8 @@ document.addEventListener("keydown", function (event){
 
     }
     else if(event.key === "ArrowDown"){
-       activeCell.y += 1
-       if(hasCollisions()){
-        activeCell.y -=1;
-        fixMove();
-        activeCell.y = 0;
-        }
+        moveCellDown();
+        
     }
 
     else if(event.key === "ArrowUp"){
@@ -294,16 +360,16 @@ document.addEventListener("keydown", function (event){
 addActiveCell();
 draw();
 
-/*let playPause;
+
 function startGame() {
-    moveToDown();
-    
-    draw()
-    playPause = setTimeout(startGame, 500)
+    moveCellDown();
+    addActiveCell();
+    draw();
+    setTimeout(startGame, 500)
 };
 
-function pauseGame() {
+/*function pauseGame() {
     clearTimeout(playPause);
-}
+}*/
 
-setTimeout(startGame, 500);*/
+setTimeout(startGame, speed);
