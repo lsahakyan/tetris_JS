@@ -341,10 +341,11 @@ function  countlevel() {
     if(score >= 50){
        level += 1;
        score = 0;
+       scoreEl.innerHTML = score;
+       levelEl.innerHTML = level;
+       speed-=100;
     }
-    scoreEl.innerHTML = score;
-    levelEl.innerHTML = level;
-    speed-=100;
+    
 }
 
 function getNewCell() {
