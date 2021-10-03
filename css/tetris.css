@@ -45,18 +45,28 @@ body{
     
 
 }
-.Resume{
+.start{
     border: 10px solid green;
     height: 80px;
     width: 150px;
 }
 
-.Pause{
+.pause{
     border: 10px solid green;
     height: 80px;
     width: 150px;
 } 
-  
+
+
+
+.gameOver{
+    color: red;
+    font-size: 80px;
+    font-family: monospace;
+    display: none;
+    position: absolute;
+    margin: 259px -57px;
+  }
   
 
 

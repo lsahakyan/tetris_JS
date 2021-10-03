@@ -1,15 +1,20 @@
 let main = document.querySelector(".main");
 let scoreEl = document.querySelector(".score");
 let levelEl = document.querySelector(".level");
+let start = document.querySelector(".start");
+let gameOver = document.querySelector(".gameOver");
+let pause = document.querySelector(".pause");
 let score = 0;
 let level=0;
 let speed = 500;
+let isPaused = false;
+let gameTimer;
 let playField = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 1, 1, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -92,6 +97,7 @@ function draw() {
     main.innerHTML = mainInnerHTMl
 
 };
+draw();
 
 
 function hasCollisions(){
@@ -240,6 +246,51 @@ function moveToRight() {
 };
 
 */
+function reset() {
+    isPaused = false;
+    clearTimeout(gameTimer);
+    playField = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+       ];
+    }
+
+    function moveCellDown() {
+        activeCell.y += 1;
+        if (hasCollisions()) {
+          activeCell.y -= 1;
+          fixMove();
+          removeFullLines();
+          countlevel();
+          activeCell.shape = getNewCell();
+          activeCell.x = Math.floor(
+            (playField[0].length - activeCell.shape[0].length) / 2
+          );
+          activeCell.y = 0;
+          if (hasCollisions()) {
+            reset();
+            gameOver.style.display = "block";
+          }
+        }
+      }
 
 
 
@@ -305,20 +356,7 @@ function getNewCell() {
   }
 
 
-function moveCellDown() {
-    activeCell.y += 1;
-    if (hasCollisions()) {
-      activeCell.y -= 1;
-      fixMove();
-      removeFullLines();
-      countlevel();
-      activeCell.shape = getNewCell();
-      activeCell.x = Math.floor(
-        (playField[0].length - activeCell.shape[0].length) / 2
-      );
-      activeCell.y = 0;
-    }
-  }
+
 
 
 document.addEventListener("keydown", function (event){
@@ -346,22 +384,49 @@ document.addEventListener("keydown", function (event){
     addActiveCell();
     draw();
 });
-    
-    /*else if(event.key === " "){
-            pauseGame();
-    }
-    else if(event.key === "Enter"){
-            startGame();
-    }
-    addActiveCell();
-    draw();
-}*/  
 
-addActiveCell();
+pause.addEventListener("click", (e) => {
+   if (e.target.innerHTML === "Pause") {
+    e.target.innerHTML = "Keep playing";
+   gameTimer = setTimeout(startGame, speed);
+    clearTimeout(gameTimer);
+   } else {
+     e.target.innerHTML = "Pause";
+   }
+   isPaused = !isPaused;
+ });
+ start.addEventListener("click", (e) => {
+    gameOver.style.display = "none";
+    score = 0;
+    level = 0;
+    speed = 500;
+    scoreEl.innerHTML = 0;
+    levelEl.innerHTML = 0;
+    reset();
+    startGame();
+    draw();
+  });
+
 draw();
 
+ function startGame() {
+   if (!isPaused  && gameOver.style.display !== "block")  {
+     moveCellDown();
+     addActiveCell();
+     draw();
+   }
+   gameTimer = setTimeout(startGame, speed);
+ }
 
-function startGame() {
+
+
+
+
+
+
+
+
+/*function startGame() {
     moveCellDown();
     addActiveCell();
     draw();
@@ -372,4 +437,5 @@ function startGame() {
     clearTimeout(playPause);
 }*/
 
-setTimeout(startGame, speed);
+/*setTimeout(startGame, speed);*/
+
